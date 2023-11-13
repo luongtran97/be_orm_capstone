@@ -35,7 +35,6 @@ class upLoadImg {
 
   @ApiProperty()
   mo_ta: string;
-
 }
 
 class delImg {
@@ -70,7 +69,7 @@ export class ImgController {
   // api lấy hình ảnh đã tạo theo id hình
   @Get('/getImgById/:idImg')
   @HttpCode(200)
-  getImgById(@Param('id') id: number, @Res() res) {
+  getImgById(@Param('idImg') id: number, @Res() res) {
     return this.imgService.getImgById(+id, res);
   }
 
@@ -126,11 +125,11 @@ export class ImgController {
   @Post('/createImg')
   @HttpCode(201)
   createImg(
-    @Body() body:upLoadImg,
+    @Body() body: upLoadImg,
     @UploadedFile() file: Express.Multer.File,
     @Headers('token') token: string,
     @Res() res,
   ) {
-    return this.imgService.createImg(token, file, res,body);
+    return this.imgService.createImg(token, file, res, body);
   }
 }

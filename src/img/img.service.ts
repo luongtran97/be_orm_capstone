@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, hinh_anh, luu_anh } from '@prisma/client';
+
 import { decoToken } from 'src/config/jwt';
 import {
   decodeTokenType,
@@ -29,22 +30,33 @@ export class ImgService {
 
   // lấy hình đã tạo theo id hình
   async getImgById(id, res) {
-    let data: hinh_anh = await this.prisma.hinh_anh.findFirst({
-      where: {
-        hinh_id: id,
-      },
-      include: {
-        nguoi_dung: {
-          select: {
-            hoTen: true,
-            email: true,
-            taiKhoan: true,
-            nguoi_dung_id: true,
+   
+    try {
+      const data: hinh_anh = await this.prisma.hinh_anh.findFirst({
+        where: {
+          hinh_id: id,
+        },
+        include: {
+          nguoi_dung: {
+            select: {
+              hoTen: true,
+              email: true,
+              taiKhoan: true,
+              nguoi_dung_id: true,
+            },
           },
         },
-      },
-    });
-    res.send(data);
+      });
+      if(data){
+        res.send(data);
+
+      }else{
+        res.status(404).send("Không tìm thấy hình")
+      }
+   
+    } catch (error) {
+      res.send(error)
+    }
   }
 
   // lấy hình đã lưu theo id user
@@ -104,7 +116,7 @@ export class ImgService {
   }
 
   // lưu ảnh
-  async saveImg(body, token, res,) {
+  async saveImg(body, token, res) {
     const decode: decodeTokenType = decoToken(token);
 
     const { hinh_id } = body;
@@ -138,8 +150,8 @@ export class ImgService {
 
           const dataRes = {
             ...response,
-            trang_thai:"hủy lưu"
-          }
+            trang_thai: 'hủy lưu',
+          };
           res.send(dataRes);
         } catch (error) {
           res.status(500).send(error.message);
@@ -152,8 +164,8 @@ export class ImgService {
           });
           const dataRes = {
             ...response,
-            trang_thai:"đã lưu"
-          }
+            trang_thai: 'đã lưu',
+          };
           res.send(dataRes);
         } catch (error) {
           res.status(500).send(error.message);
@@ -171,10 +183,9 @@ export class ImgService {
         });
         const dataRes = {
           ...response,
-          trang_thai:"đã lưu"
-        }
+          trang_thai: 'đã lưu',
+        };
         res.send(dataRes);
-
       } catch (error) {
         res.status(500).send(error.message);
       }
@@ -182,7 +193,7 @@ export class ImgService {
   }
 
   // tạo hình
-  async createImg( token, file, res,body) {
+  async createImg(token, file, res, body) {
     const decode: decodeTokenType = decoToken(token);
     const { ten_hinh, mo_ta } = body;
     const { nguoi_dung_id } = decode.data;
