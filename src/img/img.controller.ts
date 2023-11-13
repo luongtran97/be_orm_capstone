@@ -68,7 +68,7 @@ export class ImgController {
   }
 
   // api lấy hình ảnh đã tạo theo id hình
-  @Get('/getImgById/:id')
+  @Get('/getImgById/:idImg')
   @HttpCode(200)
   getImgById(@Param('id') id: number, @Res() res) {
     return this.imgService.getImgById(+id, res);

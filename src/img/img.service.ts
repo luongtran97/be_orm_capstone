@@ -27,7 +27,7 @@ export class ImgService {
     return data;
   }
 
-  // lấy hình đẫ tạo theo id hình
+  // lấy hình đã tạo theo id hình
   async getImgById(id, res) {
     let data: hinh_anh = await this.prisma.hinh_anh.findFirst({
       where: {
@@ -135,7 +135,12 @@ export class ImgService {
             data: { ...isImgSaved, tinh_trang: false },
             where: { luu_anh_id: checkSavedImg.luu_anh_id },
           });
-          res.send(response);
+
+          const dataRes = {
+            ...response,
+            trang_thai:"hủy lưu"
+          }
+          res.send(dataRes);
         } catch (error) {
           res.status(500).send(error.message);
         }
@@ -145,7 +150,11 @@ export class ImgService {
             data: { ...isImgSaved, tinh_trang: true },
             where: { luu_anh_id: checkSavedImg.luu_anh_id },
           });
-          res.send(response);
+          const dataRes = {
+            ...response,
+            trang_thai:"đã lưu"
+          }
+          res.send(dataRes);
         } catch (error) {
           res.status(500).send(error.message);
         }
@@ -160,7 +169,12 @@ export class ImgService {
             ngay_luu: new Date(),
           },
         });
-        res.send(response);
+        const dataRes = {
+          ...response,
+          trang_thai:"đã lưu"
+        }
+        res.send(dataRes);
+
       } catch (error) {
         res.status(500).send(error.message);
       }
